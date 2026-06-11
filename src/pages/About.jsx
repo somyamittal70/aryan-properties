@@ -85,7 +85,7 @@ export default function AboutPage() {
     <div className="overflow-x-hidden text-[#1E2D1A]" style={{ background: "#F0F5ED" }}>
 
       {/* ════ HERO ════ */}
-      <section className="relative flex items-center justify-center text-center min-h-[100svh] px-4 sm:px-6 overflow-hidden">
+      <section id="about" className="relative flex items-center justify-center text-center min-h-[100svh] px-4 sm:px-6 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img src={IMG.heroBg} alt="" className="w-full h-full object-cover block" />
           <div className="absolute inset-0" style={{ background: "linear-gradient(135deg,rgba(10,31,5,.90) 0%,rgba(26,58,10,.75) 50%,rgba(10,31,5,.85) 100%)" }} />
