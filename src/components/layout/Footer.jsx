@@ -3,11 +3,13 @@ import { Link } from "react-router-dom";
 import { ArrowRight, MapPin, Phone, Mail, Globe, Clock } from "lucide-react";
 
 const COLORS = {
-  dark: "#13171F",
-  green: "#5d8f44",
+  bg: "#0f1a0d",          // very dark green-black background
+  bgSurface: "#162213",   // slightly lighter surface
+  green: "#5d8f44",       // primary green accent
+  greenLight: "#7ab85a",  // lighter green for hover/highlights
   text: "rgba(255,255,255,0.5)",
-  textHover: "rgba(255,255,255,0.82)",
-  border: "rgba(255,255,255,0.07)",
+  textHover: "rgba(255,255,255,0.85)",
+  border: "rgba(93,143,68,0.15)",
 };
 
 const useBreakpoint = () => {
@@ -39,7 +41,7 @@ const FooterLink = ({ to, children }) => (
       onMouseEnter={(e) => (e.currentTarget.style.color = COLORS.textHover)}
       onMouseLeave={(e) => (e.currentTarget.style.color = COLORS.text)}
     >
-      <ArrowRight size={9} style={{ color: "rgba(93,143,68,0.5)", flexShrink: 0 }} />
+      <ArrowRight size={9} style={{ color: COLORS.green, flexShrink: 0 }} />
       {children}
     </Link>
   </li>
@@ -52,7 +54,7 @@ const ColHeading = ({ children }) => (
     textTransform: "uppercase",
     fontFamily: "Jost, sans-serif",
     fontWeight: 600,
-    color: COLORS.green,
+    color: COLORS.greenLight,
     marginBottom: 16,
   }}>
     {children}
@@ -64,10 +66,11 @@ const Footer = () => {
 
   return (
     <footer style={{
-      background: COLORS.dark,
+      background: COLORS.bg,
       color: "#fff",
       position: "relative",
       overflow: "hidden",
+      borderTop: `1px solid ${COLORS.border}`,
     }}>
       <style>{`
         .footer-watermark {
@@ -78,7 +81,7 @@ const Footer = () => {
           font-size: clamp(40px, 10vw, 140px);
           font-family: 'Jost', sans-serif;
           font-weight: 700;
-          color: rgba(93,143,68,0.06);
+          color: rgba(93,143,68,0.05);
           white-space: nowrap;
           pointer-events: none;
           z-index: 0;
@@ -96,21 +99,15 @@ const Footer = () => {
           grid-template-columns: 2fr 1fr 1fr 1fr;
           gap: 48px;
           padding-bottom: 40px;
-          border-bottom: 1px solid rgba(255,255,255,0.07);
+          border-bottom: 1px solid rgba(93,143,68,0.12);
           margin-bottom: 24px;
         }
         @media (max-width: 900px) {
-          .footer-grid {
-            grid-template-columns: 1fr 1fr;
-            gap: 32px;
-          }
+          .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
           .footer-brand { grid-column: 1 / -1; }
         }
         @media (max-width: 540px) {
-          .footer-grid {
-            grid-template-columns: 1fr;
-            gap: 28px;
-          }
+          .footer-grid { grid-template-columns: 1fr; gap: 28px; }
           .footer-brand { grid-column: auto; }
           .footer-bottom { flex-direction: column !important; text-align: center; gap: 8px; }
         }
@@ -118,8 +115,8 @@ const Footer = () => {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          background: rgba(255,255,255,0.04);
-          border: 1px solid rgba(255,255,255,0.08);
+          background: rgba(93,143,68,0.06);
+          border: 1px solid rgba(93,143,68,0.2);
           padding: 12px 16px;
           margin-bottom: 20px;
         }
@@ -130,6 +127,17 @@ const Footer = () => {
           object-fit: contain;
           display: block;
           filter: brightness(1.1) contrast(1.05);
+        }
+        .contact-icon-box {
+          width: 28px;
+          height: 28px;
+          border: 1px solid rgba(93,143,68,0.25);
+          background: rgba(93,143,68,0.08);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          margin-top: 1px;
         }
       `}</style>
 
@@ -146,27 +154,29 @@ const Footer = () => {
 
             <p style={{
               fontSize: 13, fontFamily: "Jost, sans-serif", fontWeight: 300,
-              color: "rgba(255,255,255,0.45)", lineHeight: 1.8, maxWidth: 280, marginBottom: 24,
+              color: "rgba(255,255,255,0.4)", lineHeight: 1.85, maxWidth: 280, marginBottom: 24,
             }}>
               Turning Your Dream Home Into Reality. Trusted real estate consultants
               in Noida specialising in residential &amp; commercial properties.
             </p>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 24 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 24 }}>
               {[
-                { Icon: MapPin,  text: "Shop No-16, VDS Market, Sector 110, Noida, UP 201304" },
-                { Icon: Phone,   text: "099534 44307",              href: "tel:+910995344307" },
-                { Icon: Mail,    text: "info@aryanproperties.com",  href: "mailto:info@aryanproperties.com" },
-                { Icon: Globe,   text: "www.aryanproperties.com",   href: "https://www.aryanproperties.com" },
-                { Icon: Clock,   text: "Open · Closes 7 pm  |  Mon – Sat" },
+                { Icon: MapPin, text: "Shop No-16, VDS Market, Sector 110, Noida, UP 201304" },
+                { Icon: Phone,  text: "099534 44307",             href: "tel:+910995344307" },
+                { Icon: Mail,   text: "info@aryanproperties.com", href: "mailto:info@aryanproperties.com" },
+                { Icon: Globe,  text: "www.aryanproperties.com",  href: "https://www.aryanproperties.com" },
+                { Icon: Clock,  text: "Open · Closes 7 pm  |  Mon – Sat" },
               ].map(({ Icon, text, href }) => (
                 <div key={text} style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
-                  <Icon size={12} style={{ color: COLORS.green, marginTop: 3, flexShrink: 0 }} />
+                  <div className="contact-icon-box">
+                    <Icon size={11} style={{ color: COLORS.green }} />
+                  </div>
                   {href ? (
                     <a href={href} style={{
                       fontSize: 13, fontFamily: "Jost, sans-serif", fontWeight: 300,
                       color: "rgba(255,255,255,0.45)", textDecoration: "none",
-                      letterSpacing: "0.02em", transition: "color 0.2s",
+                      letterSpacing: "0.02em", transition: "color 0.2s", paddingTop: 5,
                     }}
                       onMouseEnter={(e) => (e.currentTarget.style.color = "#fff")}
                       onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.45)")}
@@ -174,7 +184,7 @@ const Footer = () => {
                   ) : (
                     <span style={{
                       fontSize: 13, fontFamily: "Jost, sans-serif", fontWeight: 300,
-                      color: "rgba(255,255,255,0.45)", lineHeight: 1.6,
+                      color: "rgba(255,255,255,0.45)", lineHeight: 1.6, paddingTop: 5,
                     }}>{text}</span>
                   )}
                 </div>
@@ -215,14 +225,14 @@ const Footer = () => {
 
         {/* Bottom bar */}
         <div className="footer-bottom" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
-          <span style={{ fontSize: 12, fontFamily: "Jost, sans-serif", fontWeight: 300, color: "rgba(255,255,255,0.25)" }}>
+          <span style={{ fontSize: 12, fontFamily: "Jost, sans-serif", fontWeight: 300, color: "rgba(255,255,255,0.2)" }}>
             © 2026 Aryan Properties. All rights reserved.
           </span>
           <a
             href="https://deboxtechnology.com"
-            style={{ fontSize: 12, fontFamily: "Jost, sans-serif", fontWeight: 300, color: "rgba(255,255,255,0.25)", textDecoration: "none" }}
+            style={{ fontSize: 12, fontFamily: "Jost, sans-serif", fontWeight: 300, color: "rgba(255,255,255,0.2)", textDecoration: "none" }}
             onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.55)")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.25)")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.2)")}
           >
             DEVELOPED BY DEBOX TECHNOLOGY
           </a>

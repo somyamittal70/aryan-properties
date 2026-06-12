@@ -24,11 +24,10 @@ import {
   Key,
   BarChart3,
   ZoomIn,
-  Menu,
-  X,
   Calendar,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import Navbar from "../components/layout/Navbar";
 
 const COLORS = {
   bg: "#F0F5ED",
@@ -267,8 +266,6 @@ const GlobalStyles = () => (
       ::-webkit-scrollbar-thumb { background: #5d8f44; border-radius: 3px; }
       .hide-scrollbar::-webkit-scrollbar { display: none; }
       .hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
-      .nav-link { transition: color 0.2s; }
-      .nav-link:hover { color: #5d8f44 !important; }
       .prop-card:hover { transform: translateY(-6px); box-shadow: 0 16px 48px rgba(30,45,26,0.12) !important; }
       .prop-card { transition: transform 0.3s, box-shadow 0.3s; }
       .prop-card img { transition: transform 0.6s; }
@@ -285,8 +282,6 @@ const GlobalStyles = () => (
       .gal-overlay { opacity: 0; transition: opacity 0.3s; }
       .gal-item:hover .gal-overlay { opacity: 1; }
       input:focus, select:focus, textarea:focus { border-color: #5d8f44 !important; outline: none; }
-      .mobile-nav { transform: translateX(100%); transition: transform 0.35s ease; }
-      .mobile-nav.open { transform: translateX(0); }
       @media (max-width: 639px) {
         .srv-desc { opacity: 1 !important; transform: translateY(0) !important; }
       }
@@ -359,7 +354,7 @@ const Hero = () => {
           width: "100%",
           maxWidth: 1280,
           margin: "0 auto",
-          padding: isMobile ? "80px 16px 100px" : "0 40px",
+          padding: isMobile ? "80px 16px 100px" : "90px 40px 0",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -410,12 +405,13 @@ const Hero = () => {
           style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontSize: isMobile
-              ? "70px"
-              : "60px",
+              ? "clamp(40px, 12vw, 64px)"
+              : "clamp(52px, 8vw, 96px)",
             fontWeight: 900,
             color: "#fff",
             lineHeight: 0.95,
             letterSpacing: "-0.01em",
+            marginBottom: 8,
           }}
         >
           TURNING YOUR DREAM
@@ -427,13 +423,13 @@ const Hero = () => {
           style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontSize: isMobile
-              ? "65px"
-              : "75px",
+              ? "clamp(40px, 12vw, 64px)"
+              : "clamp(52px, 8vw, 96px)",
             fontWeight: 900,
             color: COLORS.green,
             lineHeight: 1,
             letterSpacing: "-0.01em",
-            marginBottom: 8,
+            marginBottom: 18,
           }}
         >
           HOME INTO REALITY
@@ -443,7 +439,7 @@ const Hero = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.35 }}
           style={{
-            color: "rgba(255, 255, 255, 1)",
+            color: "rgba(255,255,255,0.85)",
             fontFamily: "Jost, sans-serif",
             fontWeight: 300,
             fontSize: isMobile ? 13 : 16,
@@ -2520,6 +2516,7 @@ export default function App() {
   return (
     <div style={{ fontFamily: "Jost, sans-serif", background: COLORS.bg }}>
       <GlobalStyles />
+      <Navbar />
       <Hero />
       <About />
       <LuxuryProperties />
