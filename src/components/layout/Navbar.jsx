@@ -1,23 +1,15 @@
 // Navbar.jsx - Aryan Properties
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Menu, X, Phone } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
-const COLORS = { green: "#5d8f44" };
-
-const useBreakpoint = () => {
-  const [w, setW] = useState(typeof window !== "undefined" ? window.innerWidth : 1280);
-  useEffect(() => {
-    const handler = () => setW(window.innerWidth);
-    window.addEventListener("resize", handler);
-    return () => window.removeEventListener("resize", handler);
-  }, []);
-  return { isMobile: w < 640, isTablet: w >= 640 && w < 1024, isDesktop: w >= 1024, width: w };
-};
+const GREEN      = "#5d8f44";
+const GREEN_DARK = "#3a6b25";
 
 const NAV_LINKS = [
+  { label: "Home",       to: "/"           },
   { label: "About",      to: "/about"      },
   { label: "Properties", to: "/properties" },
   { label: "Services",   to: "/services"   },
@@ -27,225 +19,349 @@ const NAV_LINKS = [
   { label: "Contact",    to: "/contact"    },
 ];
 
-const Navbar = () => {
-  const { isMobile, isTablet } = useBreakpoint();
-  const [scrolled, setScrolled]   = useState(false);
-  const [menuOpen, setMenuOpen]   = useState(false);
-  const location = useLocation();
-
+const useScrolled = () => {
+  const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 60);
-    window.addEventListener("scroll", handler);
-    return () => window.removeEventListener("scroll", handler);
+    const fn = () => setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", fn);
+    return () => window.removeEventListener("scroll", fn);
   }, []);
+  return scrolled;
+};
 
+export default function Navbar() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const scrolled  = useScrolled();
+  const location  = useLocation();
+
+  /* close drawer on route change */
+  useEffect(() => setMenuOpen(false), [location.pathname]);
+
+  /* lock body scroll when drawer open */
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [menuOpen]);
 
-  // close drawer on route change
-  useEffect(() => { setMenuOpen(false); }, [location.pathname]);
-
   const isActive = (to) =>
-    to === "/"
-      ? location.pathname === "/"
-      : location.pathname.startsWith(to);
+    to === "/" ? location.pathname === "/" : location.pathname.startsWith(to);
+
+  /* ── shared nav background ── */
+  const navBg = scrolled
+    ? "rgba(8,24,4,0.97)"
+    : "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, transparent 100%)";
 
   return (
     <>
-      <style>{`
-        /* desktop nav link */
-        .nav-link {
-          position: relative;
-          transition: color 0.2s;
-          padding-bottom: 4px;
-        }
-        /* animated underline */
-        .nav-link::after {
-          content: "";
-          position: absolute;
-          left: 0; bottom: -2px;
-          width: 100%; height: 1.5px;
-          background: #5d8f44;
-          transform: scaleX(0);
-          transform-origin: left;
-          transition: transform 0.25s ease;
-        }
-        .nav-link:hover { color: #5d8f44 !important; }
-        .nav-link:hover::after { transform: scaleX(1); }
+      {/* ═══════════════════ NAVBAR ═══════════════════ */}
+      <nav
+        style={{
+          position: "fixed",
+          top: 0, left: 0, right: 0,
+          zIndex: 1000,
+          background: navBg,
+          backdropFilter: scrolled ? "blur(18px)" : "none",
+          borderBottom: scrolled ? "1px solid rgba(93,143,68,0.18)" : "none",
+          transition: "background 0.35s, border-color 0.35s",
+        }}
+      >
+        {/* inner row */}
+        <div
+          style={{
+            maxWidth: 1380,
+            margin: "0 auto",
+            padding: "0 24px",
+            height: 88,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 16,
+          }}
+        >
+          {/* ── LOGO ── */}
+          <Link
+            to="/"
+            style={{ textDecoration: "none", flexShrink: 0, display: "flex", alignItems: "center" }}
+          >
+            <img
+              src="./logo.png"
+              alt="Aryan Properties"
+              style={{
+                height: 72,
+                width: "auto",
+                objectFit: "contain",
+                display: "block",
+                /* white glow so logo pops on any bg */
+                filter: "brightness(1.15) drop-shadow(0 0 6px rgba(255,255,255,0.25)) drop-shadow(0 0 14px rgba(93,143,68,0.4))",
+              }}
+            />
+          </Link>
 
-        /* active page — underline stays */
-        .nav-link.active {
-          color: #5d8f44 !important;
-        }
-        .nav-link.active::after { transform: scaleX(1); }
+          {/* ── DESKTOP LINKS (≥ 1100px) ── */}
+          <div
+            className="desktop-nav"
+            style={{ display: "flex", alignItems: "center", gap: 28, flexShrink: 0 }}
+          >
+            {NAV_LINKS.map(({ label, to }) => {
+              const active = isActive(to);
+              return (
+                <Link
+                  key={label}
+                  to={to}
+                  style={{
+                    position: "relative",
+                    textDecoration: "none",
+                    fontSize: 10,
+                    letterSpacing: "0.2em",
+                    textTransform: "uppercase",
+                    fontFamily: "Jost, sans-serif",
+                    fontWeight: 600,
+                    color: active ? GREEN : "rgba(255,255,255,0.82)",
+                    paddingBottom: 4,
+                    whiteSpace: "nowrap",
+                    transition: "color 0.2s",
+                  }}
+                  onMouseEnter={e => { if (!active) e.currentTarget.style.color = GREEN; }}
+                  onMouseLeave={e => { if (!active) e.currentTarget.style.color = "rgba(255,255,255,0.82)"; }}
+                >
+                  {label}
+                  {/* underline */}
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: 0, bottom: 0,
+                      width: "100%", height: 1.5,
+                      background: GREEN,
+                      transform: active ? "scaleX(1)" : "scaleX(0)",
+                      transformOrigin: "left",
+                      transition: "transform 0.25s ease",
+                    }}
+                  />
+                </Link>
+              );
+            })}
 
-        /* mobile drawer */
-        .mobile-nav { transform: translateX(100%); transition: transform 0.35s ease; }
-        .mobile-nav.open { transform: translateX(0); }
-
-        /* mobile link active dot */
-        .mobile-link-active {
-          color: #5d8f44 !important;
-          border-left: 2.5px solid #5d8f44;
-          padding-left: 12px;
-        }
-      `}</style>
-
-      <nav style={{
-        position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000,
-        padding: isMobile ? "0 16px" : "0 40px",
-        height: isMobile ? 56 : 72,
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        background: scrolled ? "rgba(10,31,5,0.96)" : "transparent",
-        backdropFilter: scrolled ? "blur(16px)" : "none",
-        borderBottom: scrolled ? "1px solid rgba(93,143,68,0.2)" : "none",
-        transition: "background 0.3s",
-      }}>
-
-        {/* ── Logo ── */}
-        <Link to="/" style={{ textDecoration: "none", display: "flex", alignItems: "center" }}>
-          <img
-            src="./logo.png"
-            alt="Aryan Properties"
-            style={{
-              height: isMobile ? 46 : 62,
-              width: "auto",
-              objectFit: "contain",
-              display: "block",
-              
-              filter: "brightness(1.1) drop-shadow(0 0 8px rgba(93,143,68,0.3))",
-            }}
-          />
-        </Link>
-
-        {/* ── Desktop Links ── */}
-        {!isMobile && !isTablet && (
-          <div style={{ display: "flex", gap: 32 }}>
-            {NAV_LINKS.map(({ label, to }) => (
-              <Link
-                key={label}
-                to={to}
-                className={`nav-link ${isActive(to) ? "active" : ""}`}
+            {/* Book Visit CTA */}
+            <Link to="/contact" style={{ textDecoration: "none", flexShrink: 0 }}>
+              <button
                 style={{
-                  fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase",
-                  color: isActive(to) ? COLORS.green : "rgba(255,255,255,0.75)",
-                  fontFamily: "Jost, sans-serif", fontWeight: 500, textDecoration: "none",
+                  background: GREEN,
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 8,
+                  padding: "10px 20px",
+                  fontSize: 10,
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                  fontFamily: "Jost, sans-serif",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  whiteSpace: "nowrap",
+                  transition: "background 0.2s, transform 0.15s",
                 }}
+                onMouseEnter={e => { e.currentTarget.style.background = GREEN_DARK; e.currentTarget.style.transform = "translateY(-1px)"; }}
+                onMouseLeave={e => { e.currentTarget.style.background = GREEN;      e.currentTarget.style.transform = "translateY(0)"; }}
               >
-                {label}
-              </Link>
-            ))}
-          </div>
-        )}
-
-        {/* ── Right side ── */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          {!isMobile && (
-            <Link to="/contact">
-              <button style={{
-                background: COLORS.green, color: "#fff", border: "none", borderRadius: 10,
-                padding: "10px 20px", fontSize: 10, letterSpacing: "0.2em",
-                textTransform: "uppercase", fontFamily: "Jost, sans-serif",
-                fontWeight: 600, cursor: "pointer",
-              }}>
                 Book Visit
               </button>
             </Link>
-          )}
-          {(isMobile || isTablet) && (
-            <button
-              onClick={() => setMenuOpen(v => !v)}
-              style={{
-                background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)",
-                borderRadius: 8, padding: "8px", display: "flex", alignItems: "center",
-                justifyContent: "center", cursor: "pointer", color: "#fff",
-              }}
-            >
-              {menuOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
-          )}
+          </div>
+
+          {/* ── HAMBURGER (< 1100px) ── */}
+          <button
+            className="hamburger-btn"
+            onClick={() => setMenuOpen(v => !v)}
+            aria-label="Toggle menu"
+            style={{
+              background: menuOpen ? "rgba(93,143,68,0.15)" : "rgba(255,255,255,0.08)",
+              border: "1px solid rgba(255,255,255,0.15)",
+              borderRadius: 8,
+              padding: "9px 10px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              color: "#fff",
+              flexShrink: 0,
+              transition: "background 0.2s",
+            }}
+          >
+            {menuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
         </div>
       </nav>
 
-      {/* ── Mobile Drawer ── */}
-      <div
-        className={`mobile-nav ${menuOpen ? "open" : ""}`}
-        style={{
-          position: "fixed", top: 0, right: 0, bottom: 0,
-          width: Math.min(300, typeof window !== "undefined" ? window.innerWidth * 0.85 : 300),
-          background: "rgba(10,31,5,0.98)", backdropFilter: "blur(20px)",
-          zIndex: 999, padding: "72px 28px 40px",
-          display: "flex", flexDirection: "column", gap: 4,
-          borderLeft: "1px solid rgba(93,143,68,0.2)", overflowY: "auto",
-        }}
-      >
-        {/* logo inside drawer */}
-        <div style={{ marginBottom: 24 }}>
-          <img
-            src="./logo.png"
-            alt="Aryan Properties"
-            style={{ height: 36, width: "auto", objectFit: "contain", filter: "brightness(1.05)" }}
-          />
-        </div>
-
-        {NAV_LINKS.map(({ label, to }, i) => (
-          <motion.div
-            key={label}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: menuOpen ? 1 : 0, x: menuOpen ? 0 : 20 }}
-            transition={{ delay: i * 0.07 }}
-          >
-            <Link
-              to={to}
+      {/* ═══════════════════ MOBILE DRAWER ═══════════════════ */}
+      <AnimatePresence>
+        {menuOpen && (
+          <>
+            {/* backdrop */}
+            <motion.div
+              key="backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
               onClick={() => setMenuOpen(false)}
-              className={isActive(to) ? "mobile-link-active" : ""}
               style={{
-                display: "block",
-                fontSize: 22, fontFamily: "'Cormorant Garamond', serif", fontWeight: 500,
-                color: isActive(to) ? COLORS.green : "#fff",
-                textDecoration: "none",
-                padding: "13px 0",
-                paddingLeft: isActive(to) ? 12 : 0,
-                borderBottom: "1px solid rgba(255,255,255,0.06)",
-                borderLeft: isActive(to) ? `2.5px solid ${COLORS.green}` : "2.5px solid transparent",
-                transition: "all 0.2s",
+                position: "fixed", inset: 0,
+                zIndex: 998,
+                background: "rgba(0,0,0,0.5)",
+              }}
+            />
+
+            {/* drawer panel */}
+            <motion.aside
+              key="drawer"
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "tween", duration: 0.32, ease: [0.32, 0, 0.17, 1] }}
+              style={{
+                position: "fixed",
+                top: 0, right: 0, bottom: 0,
+                width: "min(300px, 85vw)",
+                background: "rgba(8,24,4,0.99)",
+                backdropFilter: "blur(24px)",
+                zIndex: 999,
+                borderLeft: "1px solid rgba(93,143,68,0.22)",
+                display: "flex",
+                flexDirection: "column",
+                overflowY: "auto",
+                padding: "0 0 32px",
               }}
             >
-              {label}
-            </Link>
-          </motion.div>
-        ))}
+              {/* drawer header */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "18px 24px",
+                  borderBottom: "1px solid rgba(93,143,68,0.15)",
+                }}
+              >
+                <img
+                  src="./logo.png"
+                  alt="Aryan Properties"
+                  style={{
+                    height: 52, width: "auto", objectFit: "contain",
+                    filter: "brightness(1.1) drop-shadow(0 0 6px rgba(93,143,68,0.3))",
+                  }}
+                />
+                <button
+                  onClick={() => setMenuOpen(false)}
+                  style={{
+                    background: "rgba(255,255,255,0.06)",
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    borderRadius: 8, padding: "7px 8px",
+                    cursor: "pointer", color: "#fff",
+                    display: "flex", alignItems: "center",
+                  }}
+                >
+                  <X size={18} />
+                </button>
+              </div>
 
-        <Link to="/contact" onClick={() => setMenuOpen(false)}>
-          <button style={{
-            marginTop: 28, background: COLORS.green, color: "#fff", border: "none",
-            borderRadius: 12, padding: "15px", fontSize: 11, letterSpacing: "0.2em",
-            textTransform: "uppercase", fontFamily: "Jost, sans-serif", fontWeight: 600,
-            cursor: "pointer", width: "100%",
-          }}>
-            Book a Site Visit
-          </button>
-        </Link>
+              {/* links */}
+              <nav style={{ padding: "12px 24px", flex: 1 }}>
+                {NAV_LINKS.map(({ label, to }, i) => {
+                  const active = isActive(to);
+                  return (
+                    <motion.div
+                      key={label}
+                      initial={{ opacity: 0, x: 18 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.045, duration: 0.3 }}
+                    >
+                      <Link
+                        to={to}
+                        onClick={() => setMenuOpen(false)}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 10,
+                          padding: "13px 0",
+                          borderBottom: "1px solid rgba(255,255,255,0.05)",
+                          textDecoration: "none",
+                          color: active ? GREEN : "rgba(255,255,255,0.8)",
+                          fontSize: 20,
+                          fontFamily: "'Cormorant Garamond', serif",
+                          fontWeight: 500,
+                          letterSpacing: "0.03em",
+                          transition: "color 0.2s",
+                        }}
+                      >
+                        {/* active indicator */}
+                        <span
+                          style={{
+                            width: 3, height: 18,
+                            borderRadius: 2,
+                            background: active ? GREEN : "transparent",
+                            flexShrink: 0,
+                            transition: "background 0.2s",
+                          }}
+                        />
+                        {label}
+                      </Link>
+                    </motion.div>
+                  );
+                })}
+              </nav>
 
-        <div style={{
-          marginTop: "auto", fontSize: 12, color: "rgba(255,255,255,0.3)",
-          fontFamily: "Jost, sans-serif", paddingTop: 24,
-        }}>
-          099534 44307
-        </div>
-      </div>
+              {/* drawer footer */}
+              <div style={{ padding: "0 24px" }}>
+                <Link to="/contact" onClick={() => setMenuOpen(false)} style={{ textDecoration: "none" }}>
+                  <button
+                    style={{
+                      width: "100%",
+                      background: GREEN,
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: 12,
+                      padding: "14px",
+                      fontSize: 11,
+                      letterSpacing: "0.2em",
+                      textTransform: "uppercase",
+                      fontFamily: "Jost, sans-serif",
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      marginBottom: 16,
+                    }}
+                  >
+                    Book a Site Visit
+                  </button>
+                </Link>
 
-      {/* ── Backdrop ── */}
-      {menuOpen && (
-        <div
-          onClick={() => setMenuOpen(false)}
-          style={{ position: "fixed", inset: 0, zIndex: 998, background: "rgba(0,0,0,0.4)" }}
-        />
-      )}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    fontSize: 12,
+                    color: "rgba(255,255,255,0.35)",
+                    fontFamily: "Jost, sans-serif",
+                  }}
+                >
+                  <Phone size={12} color={GREEN} />
+                  099534 44307
+                </div>
+              </div>
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* ── responsive toggle CSS ── */}
+      <style>{`
+        .desktop-nav  { display: flex !important; }
+        .hamburger-btn { display: none !important; }
+
+        @media (max-width: 1099px) {
+          .desktop-nav   { display: none !important; }
+          .hamburger-btn { display: flex !important; }
+        }
+      `}</style>
     </>
   );
-};
-
-export default Navbar;
+}

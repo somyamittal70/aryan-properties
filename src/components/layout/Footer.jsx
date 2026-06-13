@@ -3,23 +3,13 @@ import { Link } from "react-router-dom";
 import { ArrowRight, MapPin, Phone, Mail, Globe, Clock } from "lucide-react";
 
 const COLORS = {
-  bg: "#0f1a0d",          // very dark green-black background
-  bgSurface: "#162213",   // slightly lighter surface
-  green: "#5d8f44",       // primary green accent
-  greenLight: "#7ab85a",  // lighter green for hover/highlights
+  bg: "#0f1a0d",
+  bgSurface: "#162213",
+  green: "#5d8f44",
+  greenLight: "#7ab85a",
   text: "rgba(255,255,255,0.5)",
   textHover: "rgba(255,255,255,0.85)",
   border: "rgba(93,143,68,0.15)",
-};
-
-const useBreakpoint = () => {
-  const [w, setW] = useState(typeof window !== "undefined" ? window.innerWidth : 1280);
-  useEffect(() => {
-    const handler = () => setW(window.innerWidth);
-    window.addEventListener("resize", handler);
-    return () => window.removeEventListener("resize", handler);
-  }, []);
-  return { isMobile: w < 640, isTablet: w >= 640 && w < 1024, isDesktop: w >= 1024, width: w };
 };
 
 const FooterLink = ({ to, children }) => (
@@ -62,8 +52,6 @@ const ColHeading = ({ children }) => (
 );
 
 const Footer = () => {
-  const { isMobile } = useBreakpoint();
-
   return (
     <footer style={{
       background: COLORS.bg,
@@ -78,7 +66,7 @@ const Footer = () => {
           top: 65%;
           left: 50%;
           transform: translate(-50%, -50%);
-          font-size: clamp(40px, 10vw, 140px);
+          font-size: clamp(28px, 8vw, 140px);
           font-family: 'Jost', sans-serif;
           font-weight: 700;
           color: rgba(93,143,68,0.05);
@@ -92,7 +80,7 @@ const Footer = () => {
           z-index: 1;
           max-width: 1380px;
           margin: 0 auto;
-          padding: clamp(40px,5vw,64px) clamp(20px,4vw,40px) clamp(24px,3vw,36px);
+          padding: clamp(36px, 5vw, 64px) clamp(16px, 4vw, 40px) clamp(20px, 3vw, 36px);
         }
         .footer-grid {
           display: grid;
@@ -102,35 +90,75 @@ const Footer = () => {
           border-bottom: 1px solid rgba(93,143,68,0.12);
           margin-bottom: 24px;
         }
-        @media (max-width: 900px) {
-          .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
-          .footer-brand { grid-column: 1 / -1; }
+
+        /* Tablet: 640–1023px */
+        @media (max-width: 1023px) {
+          .footer-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 32px 24px;
+          }
+          .footer-brand {
+            grid-column: 1 / -1;
+          }
+          /* side-by-side contact info on tablet */
+          .footer-contact-list {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px 24px;
+          }
         }
-        @media (max-width: 540px) {
-          .footer-grid { grid-template-columns: 1fr; gap: 28px; }
-          .footer-brand { grid-column: auto; }
-          .footer-bottom { flex-direction: column !important; text-align: center; gap: 8px; }
+
+        /* Mobile: <640px */
+        @media (max-width: 639px) {
+          .footer-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 24px 16px;
+          }
+          .footer-brand {
+            grid-column: 1 / -1;
+          }
+          .footer-links-cols {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px 16px;
+          }
+          .footer-contact-list {
+            display: flex !important;
+            flex-direction: column;
+            gap: 12px;
+          }
+          .footer-bottom {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 6px;
+          }
+          .footer-watermark {
+            font-size: clamp(20px, 7vw, 60px);
+          }
         }
+
         .logo-wrap {
           display: inline-flex;
           align-items: center;
           justify-content: center;
           background: rgba(93,143,68,0.06);
           border: 1px solid rgba(93,143,68,0.2);
-          padding: 12px 16px;
-          margin-bottom: 20px;
+          padding: 10px 14px;
+          margin-bottom: 18px;
         }
         .logo-wrap img {
-          height: 72px;
+          height: clamp(44px, 6vw, 72px);
           width: auto;
-          max-width: 220px;
+          max-width: 200px;
           object-fit: contain;
           display: block;
           filter: brightness(1.1) contrast(1.05);
         }
         .contact-icon-box {
-          width: 28px;
-          height: 28px;
+          width: 26px;
+          height: 26px;
+          min-width: 26px;
           border: 1px solid rgba(93,143,68,0.25);
           background: rgba(93,143,68,0.08);
           display: flex;
@@ -139,6 +167,14 @@ const Footer = () => {
           flex-shrink: 0;
           margin-top: 1px;
         }
+        .footer-link-col ul {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 11px;
+        }
       `}</style>
 
       <div className="footer-watermark">ARYAN PROPERTIES</div>
@@ -146,7 +182,7 @@ const Footer = () => {
       <div className="footer-inner">
         <div className="footer-grid">
 
-          {/* Brand column */}
+          {/* ── Brand column ── */}
           <div className="footer-brand">
             <div className="logo-wrap">
               <img src="/logo.png" alt="Aryan Properties" />
@@ -154,13 +190,17 @@ const Footer = () => {
 
             <p style={{
               fontSize: 13, fontFamily: "Jost, sans-serif", fontWeight: 300,
-              color: "rgba(255,255,255,0.4)", lineHeight: 1.85, maxWidth: 280, marginBottom: 24,
+              color: "rgba(255,255,255,0.4)", lineHeight: 1.85,
+              maxWidth: 300, marginBottom: 20,
             }}>
               Turning Your Dream Home Into Reality. Trusted real estate consultants
               in Noida specialising in residential &amp; commercial properties.
             </p>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 24 }}>
+            <div
+              className="footer-contact-list"
+              style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 20 }}
+            >
               {[
                 { Icon: MapPin, text: "Shop No-16, VDS Market, Sector 110, Noida, UP 201304" },
                 { Icon: Phone,  text: "099534 44307",             href: "tel:+910995344307" },
@@ -168,23 +208,25 @@ const Footer = () => {
                 { Icon: Globe,  text: "www.aryanproperties.com",  href: "https://www.aryanproperties.com" },
                 { Icon: Clock,  text: "Open · Closes 7 pm  |  Mon – Sat" },
               ].map(({ Icon, text, href }) => (
-                <div key={text} style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+                <div key={text} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
                   <div className="contact-icon-box">
                     <Icon size={11} style={{ color: COLORS.green }} />
                   </div>
                   {href ? (
                     <a href={href} style={{
-                      fontSize: 13, fontFamily: "Jost, sans-serif", fontWeight: 300,
+                      fontSize: 12, fontFamily: "Jost, sans-serif", fontWeight: 300,
                       color: "rgba(255,255,255,0.45)", textDecoration: "none",
-                      letterSpacing: "0.02em", transition: "color 0.2s", paddingTop: 5,
+                      letterSpacing: "0.02em", transition: "color 0.2s",
+                      paddingTop: 4, lineHeight: 1.5, wordBreak: "break-word",
                     }}
                       onMouseEnter={(e) => (e.currentTarget.style.color = "#fff")}
                       onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.45)")}
                     >{text}</a>
                   ) : (
                     <span style={{
-                      fontSize: 13, fontFamily: "Jost, sans-serif", fontWeight: 300,
-                      color: "rgba(255,255,255,0.45)", lineHeight: 1.6, paddingTop: 5,
+                      fontSize: 12, fontFamily: "Jost, sans-serif", fontWeight: 300,
+                      color: "rgba(255,255,255,0.45)", lineHeight: 1.5,
+                      paddingTop: 4, wordBreak: "break-word",
                     }}>{text}</span>
                   )}
                 </div>
@@ -192,45 +234,64 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Properties */}
-          <div>
+          {/* ── Properties ── */}
+          <div className="footer-link-col">
             <ColHeading>Properties</ColHeading>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 12 }}>
+            <ul>
               {["Aranya Farmhouses", "Shivalik Crown Villa", "Nirvana Greens Farmhouse", "Magnolia Grand Villa"].map(item => (
                 <FooterLink key={item} to="/properties">{item}</FooterLink>
               ))}
             </ul>
           </div>
 
-          {/* Services */}
-          <div>
+          {/* ── Services ── */}
+          <div className="footer-link-col">
             <ColHeading>Services</ColHeading>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 12 }}>
+            <ul>
               {["Buy Property", "Sell Property", "Rent / Lease", "Book Project", "Legal Support"].map(item => (
                 <FooterLink key={item} to="/services">{item}</FooterLink>
               ))}
             </ul>
           </div>
 
-          {/* Company */}
-          <div>
+          {/* ── Company ── */}
+          <div className="footer-link-col">
             <ColHeading>Company</ColHeading>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 12 }}>
+            <ul>
               {[["About Us", "/about"], ["Blog", "/blog"], ["Gallery", "/gallery"], ["Contact", "/contact"]].map(([label, to]) => (
                 <FooterLink key={label} to={to}>{label}</FooterLink>
               ))}
             </ul>
           </div>
+
         </div>
 
-        {/* Bottom bar */}
-        <div className="footer-bottom" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
-          <span style={{ fontSize: 12, fontFamily: "Jost, sans-serif", fontWeight: 300, color: "rgba(255,255,255,0.2)" }}>
+        {/* ── Bottom bar ── */}
+        <div
+          className="footer-bottom"
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 8,
+          }}
+        >
+          <span style={{
+            fontSize: 11, fontFamily: "Jost, sans-serif", fontWeight: 300,
+            color: "rgba(255,255,255,0.2)",
+          }}>
             © 2026 Aryan Properties. All rights reserved.
           </span>
           <a
             href="https://deboxtechnology.com"
-            style={{ fontSize: 12, fontFamily: "Jost, sans-serif", fontWeight: 300, color: "rgba(255,255,255,0.2)", textDecoration: "none" }}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              fontSize: 11, fontFamily: "Jost, sans-serif", fontWeight: 300,
+              color: "rgba(255,255,255,0.2)", textDecoration: "none",
+              transition: "color 0.2s",
+            }}
             onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.55)")}
             onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.2)")}
           >

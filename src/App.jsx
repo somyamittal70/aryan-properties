@@ -10,7 +10,6 @@ import GalleryPage from './pages/GalleryPage';
 import Blog from './pages/Blog';
 import Careers from './pages/Careers';
 import Contact from './pages/Contact';
-import TopHeader from './components/layout/TopHeader.jsx';
 import WhatsAppFloat from './components/layout/WhatsAppButton.jsx';
 import CallNowFloat from './components/layout/CallButton.jsx';
 
@@ -22,7 +21,6 @@ const ScrollToTop = () => {
 
 const Layout = ({ children }) => (
   <div className="min-h-screen flex flex-col">
-    <TopHeader/>
     <Navbar />
     <main className="flex-1">{children}</main>
     <Footer />
