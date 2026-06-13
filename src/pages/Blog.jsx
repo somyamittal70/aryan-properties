@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Clock, Home, Building2, Trees, MapPin, Search, ChevronDown } from "lucide-react";
+import { ArrowRight, Clock, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const SLIDES = [
@@ -87,7 +87,6 @@ const BLOGS = [
 
 const Blog = () => {
   const [slide, setSlide] = useState(0);
-  const [activeTab, setActiveTab] = useState("Residential");
   const [activeCategory, setActiveCategory] = useState("All");
 
   useEffect(() => {
@@ -98,51 +97,64 @@ const Blog = () => {
   const s = SLIDES[slide];
 
   return (
-    <>
-      {/* ── HERO ── */}
-      <section className="relative min-h-screen flex flex-col justify-end overflow-hidden">
+    <div style={{ overflowX: "hidden", width: "100%" }}>
 
+      {/* ── HERO ── */}
+      <section
+        style={{ position: "relative", minHeight: "100svh", display: "flex", flexDirection: "column", justifyContent: "center", overflow: "hidden" }}
+      >
         {/* Background slides */}
         <AnimatePresence mode="sync">
           <motion.div
             key={slide}
-            className="absolute inset-0 z-0"
+            style={{ position: "absolute", inset: 0, zIndex: 0 }}
             initial={{ opacity: 0, scale: 1.04 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 1.1, ease: "easeInOut" }}
           >
-            <img src={s.bg} alt="" className="w-full h-full object-cover" />
+            <img src={s.bg} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
             <div
-              className="absolute inset-0"
               style={{
-                background:
-                  "linear-gradient(105deg, rgba(10,25,5,0.92) 0%, rgba(10,25,5,0.60) 55%, rgba(10,25,5,0.35) 100%)",
+                position: "absolute", inset: 0,
+                background: "linear-gradient(105deg, rgba(10,25,5,0.92) 0%, rgba(10,25,5,0.60) 55%, rgba(10,25,5,0.35) 100%)",
               }}
             />
           </motion.div>
         </AnimatePresence>
 
         {/* Slide indicators */}
-        <div className="absolute top-1/2 right-3 sm:right-6 lg:right-10 -translate-y-1/2 z-20 flex flex-col gap-2">
+        <div style={{
+          position: "absolute", top: "50%", right: "clamp(12px, 3vw, 40px)",
+          transform: "translateY(-50%)", zIndex: 20,
+          display: "flex", flexDirection: "column", gap: 8,
+        }}>
           {SLIDES.map((_, i) => (
             <button
               key={i}
               onClick={() => setSlide(i)}
-              className="transition-all duration-300 rounded-full"
               style={{
                 width: 5,
                 height: i === slide ? 24 : 5,
                 background: i === slide ? "#5d8f44" : "rgba(255,255,255,0.35)",
-                border: "none",
-                cursor: "pointer",
+                border: "none", cursor: "pointer",
+                borderRadius: 99,
+                transition: "all 0.3s",
+                padding: 0,
               }}
             />
           ))}
         </div>
 
         {/* Main content */}
-        <div className="relative z-10 w-full max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-6 mb-140 sm:mb-12 lg:mb-14 pb-0">
+        <div style={{
+          position: "relative", zIndex: 10,
+          width: "100%",
+          maxWidth: 1380,
+          margin: "0 auto",
+          padding: "clamp(80px, 12vw, 120px) clamp(16px, 5vw, 64px) clamp(60px, 10vw, 100px)",
+          boxSizing: "border-box",
+        }}>
 
           {/* Label */}
           <AnimatePresence mode="wait">
@@ -152,16 +164,20 @@ const Blog = () => {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.5 }}
-              className="flex items-center gap-3 mb-3 sm:mb-5"
+              style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: "clamp(12px, 2vw, 20px)" }}
             >
-              <span className="w-8 sm:w-12 h-[1.5px] bg-[#5d8f44]" />
-              <span className="text-[9px] sm:text-[10px] tracking-[0.22em] sm:tracking-[0.28em] uppercase text-[#5d8f44] font-semibold font-[Jost]">
+              <span style={{ width: "clamp(24px,4vw,48px)", height: 1.5, background: "#5d8f44", flexShrink: 0, display: "inline-block" }} />
+              <span style={{
+                fontSize: "clamp(8px, 1.8vw, 10px)", letterSpacing: "0.25em",
+                textTransform: "uppercase", color: "#5d8f44",
+                fontWeight: 600, fontFamily: "Jost, sans-serif",
+              }}>
                 {s.label}
               </span>
             </motion.div>
           </AnimatePresence>
 
-          {/* Headline — responsive size */}
+          {/* Headline */}
           <AnimatePresence mode="wait">
             <motion.div
               key={`title-${slide}`}
@@ -170,19 +186,17 @@ const Blog = () => {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             >
-              <h1
-                className="text-white leading-[0.9] font-[Cormorant_Garamond] font-bold uppercase"
-                style={{
-                  /*
-                   * Mobile  (~375px) → 2.2rem  = ~35px  ✓ clean, not overwhelming
-                   * Tablet  (~768px) → ~4rem   = ~64px  ✓ punchy
-                   * Desktop (~1280px)→ ~5rem   = ~80px  ✓ bold but contained
-                   * Max cap → 5.5rem so it never blows out
-                   */
-                  fontSize: "clamp(2.2rem, 5.5vw, 5.5rem)",
-                  letterSpacing: "-0.01em",
-                }}
-              >
+              <h1 style={{
+                color: "#fff",
+                lineHeight: 0.95,
+                fontFamily: "'Cormorant Garamond', serif",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "-0.01em",
+                margin: 0,
+                /* Mobile: ~32px, Tablet: ~56px, Desktop: ~80px */
+                fontSize: "clamp(2rem, 6.5vw, 5rem)",
+              }}>
                 {s.line1}
                 <br />
                 <span style={{ color: "#5d8f44" }}>{s.line2}</span>
@@ -192,45 +206,68 @@ const Blog = () => {
             </motion.div>
           </AnimatePresence>
 
-          {/* Sub + Buttons + Stats */}
-          <div className="mt-5 sm:mt-7 grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-12 items-end pb-8 sm:pb-10">
+          {/* Sub + Buttons */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`sub-${slide}`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.6, delay: 0.15 }}
+              style={{ marginTop: "clamp(16px, 3vw, 28px)" }}
+            >
+              <p style={{
+                color: "rgba(255,255,255,0.7)",
+                fontFamily: "Jost, sans-serif",
+                fontWeight: 300,
+                fontSize: "clamp(12px, 2vw, 14px)",
+                lineHeight: 1.75,
+                maxWidth: 420,
+                marginBottom: "clamp(16px, 3vw, 24px)",
+              }}>
+                {s.sub}
+              </p>
 
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={`sub-${slide}`}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.6, delay: 0.15 }}
-              >
-                <p className="text-white/70 font-[Jost] font-light text-xs sm:text-sm leading-relaxed max-w-md mb-5">
-                  {s.sub}
-                </p>
-                <div className="flex gap-2 sm:gap-3 flex-wrap">
-                  <Link to="/contact">
-                    <motion.button
-                      className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 text-white text-[10px] sm:text-[11px] tracking-[0.16em] sm:tracking-[0.18em] uppercase font-semibold font-[Jost] border-none cursor-pointer"
-                      style={{ background: "#5d8f44" }}
-                      whileHover={{ backgroundColor: "#3a6b25", scale: 1.03 }}
-                      whileTap={{ scale: 0.97 }}
-                    >
-                      Get In Touch <ArrowRight size={12} />
-                    </motion.button>
-                  </Link>
-                  <Link to="/properties">
-                    <motion.button
-                      className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 text-white text-[10px] sm:text-[11px] tracking-[0.16em] sm:tracking-[0.18em] uppercase font-semibold font-[Jost] cursor-pointer"
-                      style={{ background: "transparent", border: "1.5px solid rgba(255,255,255,0.45)" }}
-                      whileHover={{ borderColor: "#5d8f44", color: "#5d8f44", scale: 1.03 }}
-                      whileTap={{ scale: 0.97 }}
-                    >
-                      View Properties
-                    </motion.button>
-                  </Link>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
+              {/* Buttons — row on all sizes, wrap if needed */}
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                <Link to="/contact">
+                  <motion.button
+                    style={{
+                      display: "inline-flex", alignItems: "center", gap: 8,
+                      padding: "clamp(10px,2vw,14px) clamp(18px,3vw,28px)",
+                      background: "#5d8f44", color: "#fff", border: "none",
+                      fontSize: "clamp(9px,1.5vw,11px)", letterSpacing: "0.18em",
+                      textTransform: "uppercase", fontWeight: 600,
+                      fontFamily: "Jost, sans-serif", cursor: "pointer",
+                      whiteSpace: "nowrap",
+                    }}
+                    whileHover={{ backgroundColor: "#3a6b25", scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                  >
+                    Get In Touch <ArrowRight size={12} />
+                  </motion.button>
+                </Link>
+                <Link to="/properties">
+                  <motion.button
+                    style={{
+                      display: "inline-flex", alignItems: "center", gap: 8,
+                      padding: "clamp(10px,2vw,14px) clamp(18px,3vw,28px)",
+                      background: "transparent", color: "#fff",
+                      border: "1.5px solid rgba(255,255,255,0.45)",
+                      fontSize: "clamp(9px,1.5vw,11px)", letterSpacing: "0.18em",
+                      textTransform: "uppercase", fontWeight: 600,
+                      fontFamily: "Jost, sans-serif", cursor: "pointer",
+                      whiteSpace: "nowrap",
+                    }}
+                    whileHover={{ borderColor: "#5d8f44", color: "#5d8f44", scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                  >
+                    View Properties
+                  </motion.button>
+                </Link>
+              </div>
+            </motion.div>
+          </AnimatePresence>
 
         </div>
 
@@ -238,28 +275,42 @@ const Blog = () => {
         <motion.div
           animate={{ y: [0, 8, 0] }}
           transition={{ repeat: Infinity, duration: 2 }}
-          className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1.5"
+          style={{
+            position: "absolute", bottom: "clamp(12px, 3vw, 24px)",
+            left: "50%", transform: "translateX(-50%)",
+            zIndex: 20, display: "flex", flexDirection: "column",
+            alignItems: "center", gap: 6,
+          }}
         >
-          <span className="text-[8px] tracking-[0.3em] uppercase text-white/30 font-[Jost]">Scroll</span>
+          <span style={{ fontSize: 8, letterSpacing: "0.3em", textTransform: "uppercase", color: "rgba(255,255,255,0.3)", fontFamily: "Jost, sans-serif" }}>Scroll</span>
           <ChevronDown size={13} color="#5d8f44" />
         </motion.div>
       </section>
 
       {/* ── BLOG SECTION ── */}
-      <section className="py-10 sm:py-14 lg:py-16 bg-[#F5F7F5]">
-        <div className="max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8">
+      <section style={{ padding: "clamp(40px, 6vw, 80px) 0", background: "#F5F7F5" }}>
+        <div style={{
+          maxWidth: 1380, margin: "0 auto",
+          padding: "0 clamp(16px, 5vw, 64px)",
+          boxSizing: "border-box",
+        }}>
 
           {/* Category Filter */}
-          <div className="flex items-center gap-2 flex-wrap mb-8 sm:mb-10">
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: "clamp(24px, 4vw, 40px)" }}>
             {CATS.map((c) => (
               <button
                 key={c}
                 onClick={() => setActiveCategory(c)}
-                className="px-4 sm:px-5 py-2 text-[9px] sm:text-[10px] tracking-widest uppercase border transition-colors font-[Jost] font-medium"
                 style={{
+                  padding: "8px clamp(12px, 2vw, 20px)",
+                  fontSize: "clamp(8px, 1.5vw, 10px)",
+                  letterSpacing: "0.2em", textTransform: "uppercase",
+                  border: `1px solid ${activeCategory === c ? "#5d8f44" : "rgba(45,55,72,0.2)"}`,
                   background: activeCategory === c ? "#5d8f44" : "transparent",
                   color: activeCategory === c ? "#fff" : "rgba(45,55,72,0.6)",
-                  borderColor: activeCategory === c ? "#5d8f44" : "rgba(45,55,72,0.2)",
+                  fontFamily: "Jost, sans-serif", fontWeight: 500,
+                  cursor: "pointer", transition: "all 0.2s",
+                  whiteSpace: "nowrap",
                 }}
               >
                 {c}
@@ -273,33 +324,53 @@ const Blog = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="grid grid-cols-1 lg:grid-cols-2 gap-0 mb-6 sm:mb-8 lg:mb-10 group cursor-pointer border border-[#5d8f44]/20"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))",
+              border: "1px solid rgba(93,143,68,0.2)",
+              marginBottom: "clamp(24px, 4vw, 48px)",
+              cursor: "pointer",
+            }}
+            className="group"
           >
-            <div className="overflow-hidden h-56 sm:h-72 lg:h-auto">
+            <div style={{ overflow: "hidden", height: "clamp(200px, 35vw, 340px)" }}>
               <img
                 src={BLOGS[0].image}
                 alt={BLOGS[0].title}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: "transform 0.7s" }}
+                className="group-hover:scale-105"
               />
             </div>
-            <div className="bg-white p-5 sm:p-8 lg:p-10 flex flex-col justify-center">
-              <span className="text-[#5d8f44] text-[9px] tracking-[0.3em] uppercase mb-3 font-[Jost]">
+            <div style={{
+              background: "#fff",
+              padding: "clamp(20px, 4vw, 48px)",
+              display: "flex", flexDirection: "column", justifyContent: "center",
+            }}>
+              <span style={{ color: "#5d8f44", fontSize: 9, letterSpacing: "0.3em", textTransform: "uppercase", marginBottom: 12, fontFamily: "Jost, sans-serif" }}>
                 {BLOGS[0].category}
               </span>
-              <h2 className="font-[Cormorant_Garamond] text-xl sm:text-2xl lg:text-3xl font-medium text-[#1A202C] mb-3 sm:mb-4 group-hover:text-[#5d8f44] transition-colors leading-snug">
+              <h2 style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: "clamp(18px, 3vw, 30px)",
+                fontWeight: 500, color: "#1A202C",
+                marginBottom: "clamp(10px, 2vw, 16px)",
+                lineHeight: 1.3,
+              }}
+                className="group-hover:text-[#5d8f44] transition-colors"
+              >
                 {BLOGS[0].title}
               </h2>
-              <p className="text-[#2D3748]/60 text-sm font-[Jost] font-light leading-relaxed mb-5 sm:mb-6">
+              <p style={{ color: "rgba(45,55,72,0.6)", fontSize: "clamp(12px, 1.8vw, 14px)", fontFamily: "Jost, sans-serif", fontWeight: 300, lineHeight: 1.75, marginBottom: "clamp(16px, 3vw, 24px)" }}>
                 {BLOGS[0].excerpt}
               </p>
-              <div className="flex items-center justify-between flex-wrap gap-3">
-                <div className="flex items-center gap-2 sm:gap-3 text-[#2D3748]/40 text-xs font-[Jost]">
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, color: "rgba(45,55,72,0.4)", fontSize: 12, fontFamily: "Jost, sans-serif" }}>
                   <span>{BLOGS[0].date}</span>
                   <span>·</span>
                   <Clock size={11} />
                   <span>{BLOGS[0].readTime} read</span>
                 </div>
-                <span className="text-[#5d8f44] text-[10px] tracking-widest uppercase border-b border-[#5d8f44] pb-px font-[Jost]">
+                <span style={{ color: "#5d8f44", fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", borderBottom: "1px solid #5d8f44", paddingBottom: 2, fontFamily: "Jost, sans-serif" }}>
                   Read Article
                 </span>
               </div>
@@ -307,7 +378,11 @@ const Blog = () => {
           </motion.div>
 
           {/* Blog Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 lg:gap-6">
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))",
+            gap: "clamp(16px, 3vw, 24px)",
+          }}>
             {BLOGS.slice(1).map((b, i) => (
               <motion.div
                 key={b.id}
@@ -315,28 +390,43 @@ const Blog = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1, duration: 0.5 }}
-                className="group border border-[#5d8f44]/15 bg-white cursor-pointer hover:border-[#5d8f44]/40 transition-colors"
+                style={{
+                  border: "1px solid rgba(93,143,68,0.15)",
+                  background: "#fff",
+                  cursor: "pointer",
+                  transition: "border-color 0.2s",
+                }}
+                className="group hover:border-[#5d8f44]/40"
               >
-                <div className="overflow-hidden h-44 sm:h-48 lg:h-52">
+                <div style={{ overflow: "hidden", height: "clamp(160px, 25vw, 220px)" }}>
                   <img
                     src={b.image}
                     alt={b.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: "transform 0.7s" }}
+                    className="group-hover:scale-105"
                   />
                 </div>
-                <div className="p-4 sm:p-5 lg:p-6">
-                  <span className="text-[#5d8f44] text-[9px] tracking-[0.3em] uppercase mb-2 block font-[Jost]">
+                <div style={{ padding: "clamp(16px, 3vw, 24px)" }}>
+                  <span style={{ color: "#5d8f44", fontSize: 9, letterSpacing: "0.3em", textTransform: "uppercase", marginBottom: 8, display: "block", fontFamily: "Jost, sans-serif" }}>
                     {b.category}
                   </span>
-                  <h3 className="font-[Cormorant_Garamond] text-lg sm:text-xl font-medium text-[#1A202C] mb-2 sm:mb-3 group-hover:text-[#5d8f44] transition-colors leading-snug">
+                  <h3 style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontSize: "clamp(16px, 2.5vw, 20px)",
+                    fontWeight: 500, color: "#1A202C",
+                    marginBottom: "clamp(8px, 1.5vw, 12px)",
+                    lineHeight: 1.3,
+                  }}
+                    className="group-hover:text-[#5d8f44] transition-colors"
+                  >
                     {b.title}
                   </h3>
-                  <p className="text-[#2D3748]/60 text-sm font-[Jost] font-light leading-relaxed mb-4 line-clamp-2">
+                  <p style={{ color: "rgba(45,55,72,0.6)", fontSize: "clamp(12px, 1.8vw, 14px)", fontFamily: "Jost, sans-serif", fontWeight: 300, lineHeight: 1.75, marginBottom: 16, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                     {b.excerpt}
                   </p>
-                  <div className="flex items-center justify-between text-xs text-[#2D3748]/40 font-[Jost]">
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 12, color: "rgba(45,55,72,0.4)", fontFamily: "Jost, sans-serif" }}>
                     <span>{b.date}</span>
-                    <span className="text-[#5d8f44] text-[9px] tracking-widest uppercase border-b border-[#5d8f44]/50 pb-px">
+                    <span style={{ color: "#5d8f44", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", borderBottom: "1px solid rgba(93,143,68,0.5)", paddingBottom: 2 }}>
                       Read →
                     </span>
                   </div>
@@ -347,7 +437,7 @@ const Blog = () => {
 
         </div>
       </section>
-    </>
+    </div>
   );
 };
 

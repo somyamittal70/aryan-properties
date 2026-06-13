@@ -8,7 +8,6 @@ import ServicesPage from './pages/ServicesPage';
 import Properties from './pages/Properties.jsx';
 import GalleryPage from './pages/GalleryPage';
 import Blog from './pages/Blog';
-import Careers from './pages/Careers';
 import Contact from './pages/Contact';
 import WhatsAppFloat from './components/layout/WhatsAppButton.jsx';
 import CallNowFloat from './components/layout/CallButton.jsx';
@@ -40,7 +39,6 @@ const App = () => (
         <Route path="/properties" element={<Properties />} />
         <Route path="/gallery" element={<GalleryPage />} />
         <Route path="/blog" element={<Blog />} />
-        <Route path="/careers" element={<Careers />} />
         <Route path="/contact" element={<Contact />} />
       </Routes>
     </Layout>

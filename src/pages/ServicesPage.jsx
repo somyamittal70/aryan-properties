@@ -59,8 +59,8 @@ const SERVICES = [
 ];
 
 const Services = () => (
-  <>
-    {/* ── HERO — Contact page style ── */}
+  <div style={{ overflowX: 'hidden', width: '100%' }}>
+    {/* ── HERO ── */}
     <section style={{
       position: 'relative',
       height: '80vh',
@@ -68,6 +68,7 @@ const Services = () => (
       overflow: 'hidden',
       display: 'flex',
       alignItems: 'center',
+      width: '100%',
     }}>
       {/* Background image */}
       <img
@@ -80,7 +81,7 @@ const Services = () => (
         }}
       />
 
-      {/* Gradient overlay — same as Contact */}
+      {/* Gradient overlay */}
       <div style={{
         position: 'absolute', inset: 0,
         background: 'linear-gradient(105deg, rgba(26,32,44,0.95) 0%, rgba(26,32,44,0.75) 50%, rgba(26,32,44,0.3) 100%)',
@@ -101,9 +102,11 @@ const Services = () => (
       {/* Content */}
       <div style={{
         position: 'relative', zIndex: 10,
-        maxWidth: 1380, margin: '0 auto',
-        padding: 'clamp(0px,0px,0px) clamp(20px,5vw,64px)',
+        maxWidth: 1380,
+        margin: '0 auto',
+        padding: '0 clamp(16px, 5vw, 64px)',
         width: '100%',
+        boxSizing: 'border-box',
       }}>
         <motion.div
           initial={{ opacity: 0, y: 36 }}
@@ -116,18 +119,12 @@ const Services = () => (
               display: 'inline-block', width: 40, height: 1,
               background: '#5d8f44', flexShrink: 0,
             }} />
-            <span style={{
-              fontSize: 9, letterSpacing: '0.28em', textTransform: 'uppercase',
-              fontFamily: 'Jost, sans-serif', fontWeight: 600, color: '#5d8f44',
-            }}>
-              Luxury Real Estate · NCR India
-            </span>
           </div>
 
           {/* Heading */}
           <h1 style={{
             fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(38px, 7vw, 96px)',
+            fontSize: 'clamp(36px, 7vw, 96px)',
             fontWeight: 700,
             color: '#fff',
             lineHeight: 1.05,
@@ -141,24 +138,27 @@ const Services = () => (
           {/* Subtext */}
           <p style={{
             color: 'rgba(255,255,255,0.55)',
-            maxWidth: 420, fontSize: 14,
+            maxWidth: 420,
+            fontSize: 'clamp(13px, 2vw, 14px)',
             fontFamily: 'Jost, sans-serif',
-            lineHeight: 1.8, marginBottom: 40,
+            lineHeight: 1.8,
+            marginBottom: 40,
           }}>
             Discover a complete suite of luxury real estate services tailored to discerning
             homeowners, investors, and developers across Delhi NCR.
           </p>
 
-          {/* CTA buttons — same as Contact */}
+          {/* CTA buttons */}
           <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
             <Link to="/contact">
               <button style={{
                 background: '#5d8f44', color: '#fff',
-                padding: '14px 32px', border: 'none',
+                padding: '14px 28px', border: 'none',
                 fontSize: 10, letterSpacing: '0.25em', textTransform: 'uppercase',
                 fontFamily: 'Jost, sans-serif', fontWeight: 700,
                 cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8,
                 transition: 'background 0.2s',
+                whiteSpace: 'nowrap',
               }}
                 onMouseEnter={e => e.currentTarget.style.background = '#4a7235'}
                 onMouseLeave={e => e.currentTarget.style.background = '#5d8f44'}
@@ -169,11 +169,12 @@ const Services = () => (
             <Link to="/properties">
               <button style={{
                 background: 'transparent', color: '#fff',
-                padding: '14px 32px',
+                padding: '14px 28px',
                 border: '1px solid rgba(255,255,255,0.25)',
                 fontSize: 10, letterSpacing: '0.25em', textTransform: 'uppercase',
                 fontFamily: 'Jost, sans-serif', fontWeight: 500, cursor: 'pointer',
                 transition: 'border-color 0.2s',
+                whiteSpace: 'nowrap',
               }}
                 onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.6)'}
                 onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'}
@@ -195,8 +196,12 @@ const Services = () => (
 
     {/* ── SERVICE SECTIONS ── */}
     {SERVICES.map((srv, i) => (
-      <section key={srv.title} className={`py-14 sm:py-18 lg:py-24 ${i % 2 === 0 ? 'bg-white' : 'bg-[#F4F7F2]'}`}>
-        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+      <section
+        key={srv.title}
+        style={{ width: '100%', boxSizing: 'border-box', overflowX: 'hidden' }}
+        className={`py-14 sm:py-18 lg:py-24 ${i % 2 === 0 ? 'bg-white' : 'bg-[#F4F7F2]'}`}
+      >
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8" style={{ boxSizing: 'border-box' }}>
           <div className={`flex flex-col gap-10 lg:gap-16 lg:items-center
             ${srv.reverse ? 'lg:flex-row-reverse' : 'lg:flex-row'}`}>
 
@@ -207,14 +212,25 @@ const Services = () => (
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
               className="lg:w-1/2 relative overflow-hidden"
-              style={{ borderTopRightRadius: 60, borderBottomLeftRadius: 60 }}
+              style={{
+                borderTopRightRadius: 60,
+                borderBottomLeftRadius: 60,
+                width: '100%',
+                maxWidth: '100%',
+              }}
             >
-              <div className="img-zoom-wrap">
+              <div className="img-zoom-wrap" style={{ overflow: 'hidden' }}>
                 <img
                   src={srv.image}
                   alt={srv.title}
-                  className="w-full h-[260px] sm:h-[340px] lg:h-[420px] object-cover img-inner"
-                  style={{ borderTopRightRadius: 60, borderBottomLeftRadius: 60 }}
+                  className="w-full object-cover img-inner"
+                  style={{
+                    borderTopRightRadius: 60,
+                    borderBottomLeftRadius: 60,
+                    height: 'clamp(220px, 40vw, 420px)',
+                    width: '100%',
+                    display: 'block',
+                  }}
                 />
               </div>
             </motion.div>
@@ -226,9 +242,10 @@ const Services = () => (
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
               className="lg:w-1/2"
+              style={{ minWidth: 0, width: '100%' }}
             >
               <div className="flex items-center gap-3 mb-4 sm:mb-5">
-                <span className="w-8 sm:w-10 h-px bg-[#5d8f44]" />
+                <span className="w-8 sm:w-10 h-px bg-[#5d8f44] flex-shrink-0" />
                 <span className="text-[#5d8f44] text-[10px] tracking-[0.25em] uppercase font-[Jost]">{srv.title}</span>
               </div>
               <h2 className="font-[Cormorant_Garamond] text-2xl sm:text-3xl font-semibold text-black mb-4 sm:mb-5 uppercase">
@@ -252,11 +269,12 @@ const Services = () => (
                 </button>
               </Link>
             </motion.div>
+
           </div>
         </div>
       </section>
     ))}
-  </>
+  </div>
 );
 
 export default Services;
